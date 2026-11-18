@@ -52,11 +52,11 @@ func (s *Server) handleAnthropicMessages(w http.ResponseWriter, r *http.Request)
 		writeAnthropicErr(w, http.StatusBadRequest, "invalid_request_error", "messages 不能为空")
 		return
 	}
-	if err := rejectUnsupportedTools(w, req.Tools, req.ToolChoice); err != nil {
+	settings := s.Store.Settings()
+	if err := rejectUnsupportedTools(w, req.Tools, req.ToolChoice, settings.ToolsPolicy); err != nil {
 		return
 	}
 
-	settings := s.Store.Settings()
 	model := registry.Resolve(req.Model, settings.ModelAliases)
 
 	text, images, files, err := anthropicToChat(&req)

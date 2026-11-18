@@ -5,6 +5,10 @@ doubao2api.exe
 
 # 运行期状态：含账号会话 Cookie，等同账号密码，切勿提交
 doubao2api-data.json
+doubao2api-data.json.bak
+backups/
+*.bak
+*.exe~
 *.tmp
 
 # 逆向复刻中间产物（体积大且可由 tools/ 下脚本重新生成）

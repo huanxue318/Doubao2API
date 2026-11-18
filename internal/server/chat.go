@@ -77,11 +77,11 @@ func (s *Server) handleChatCompletions(w http.ResponseWriter, r *http.Request) {
 		writeErr(w, http.StatusBadRequest, "messages 不能为空", "invalid_request_error")
 		return
 	}
-	if err := rejectUnsupportedTools(w, req.Tools, req.ToolChoice); err != nil {
+	settings := s.Store.Settings()
+	if err := rejectUnsupportedTools(w, req.Tools, req.ToolChoice, settings.ToolsPolicy); err != nil {
 		return
 	}
 
-	settings := s.Store.Settings()
 	model := registry.Resolve(req.Model, settings.ModelAliases)
 
 	text, images, files, err := flattenMessages(req.Messages)

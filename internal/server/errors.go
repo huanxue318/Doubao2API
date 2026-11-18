@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"doubao2api/internal/doubao"
+	"doubao2api/internal/store"
 )
 
 // writeJSON 输出 JSON 响应。
@@ -40,8 +41,11 @@ func writeErrKind(w http.ResponseWriter, kind doubao.Kind, msg string) {
 //
 // 默认拒绝：静默忽略会让 Agent 类客户端拿到「看起来成功但没调用工具」的结果，
 // 比显式报错更难排查。设置 tools_policy=ignore 时才按普通对话处理。
-func rejectUnsupportedTools(w http.ResponseWriter, tools, toolChoice json.RawMessage) error {
+func rejectUnsupportedTools(w http.ResponseWriter, tools, toolChoice json.RawMessage, policy string) error {
 	if len(tools) == 0 && len(toolChoice) == 0 {
+		return nil
+	}
+	if policy == store.ToolsPolicyIgnore {
 		return nil
 	}
 	writeErr(w, http.StatusUnprocessableEntity,
